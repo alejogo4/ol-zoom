@@ -58,6 +58,7 @@
                 console.log(data);
                 //document.write(JSON.stringify(data));
                 data.forEach(data => {
+                    console.log(data.Apellido);
                     sendEmail(data.Email, data.Nombre, data.Apellido, id)
                 });
             };
@@ -67,6 +68,7 @@
 
 
         function sendEmail(email, name, lastname, zoomId) {
+
             var myHeaders = new Headers();
             myHeaders.append("Authorization", "bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImxqRDBUYmV3U2gycFRWV3JOOHlkT3ciLCJleHAiOjE2NzIwNzg3ODMsImlhdCI6MTY3MTQ3Mzk4M30.l0uFWYB3W19WjimX2bBe15aoBUH6F0ehqe7lu3uPFaE");
             myHeaders.append("Content-Type", "application/json");
@@ -75,7 +77,7 @@
             var raw = JSON.stringify({
                 "email": email,
                 "first_name": name,
-                "last_name": lastname
+                "last_name": lastname || '-'
             });
 
             var requestOptions = {
