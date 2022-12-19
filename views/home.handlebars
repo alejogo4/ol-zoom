@@ -1,0 +1,46 @@
+<form action="/upload" method="post" enctype="multipart/form-data" id="myForm">
+  <div class="row">
+    <div class="col">
+      <h1 class="text-center">Invitación para ZOOM</h1>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <input
+        name="code"
+        type="number"
+        id="code"
+        class="form-control"
+        placeholder="Código de la reunion"
+      />
+    </div>
+    <div class="col-md-4">
+      <input
+        type="file"
+        id="recfile"
+        name="recfile"
+        class="form-control"
+        accept=".csv"
+      />
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-12 text-center">
+      <input type="submit" value="Enviar invitación" class="btn btn-success" />
+    </div>
+  </div>
+
+  <div style="margin-top: 10%" class="row">
+    {{#if result}}
+      <h1>Registros enviados correctamente</h1>
+      {{#each result}}
+        {{#if status}}
+          <li>{{email}} -- OK</li>
+        {{else}}
+          <li>{{email}} -- {{message}}</li>
+        {{/if}}
+      {{/each}}
+    {{/if}}
+  </div>
+</form>
