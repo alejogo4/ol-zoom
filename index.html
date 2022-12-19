@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <form id="myForm">
+        <input type="text" id="zoomid" />
+        <input type="file" id="csvFile" accept=".csv" />
+        <br />
+        <input type="submit" value="Submit" />
+    </form>
+    <script>
+        const myForm = document.getElementById("myForm");
+        const csvFile = document.getElementById("csvFile");
+        const zoomId = document.getElementById('zoomid');
+
+        function csvToArray(str, delimiter = ",") {
+
+            // slice from start of text to the first \n index
+            // use split to create an array from string by delimiter
+            const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+
+            // slice from \n index + 1 to the end of the text
+            // use split to create an array of each csv value row
+            const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+
+            // Map the rows
+            // split values from each row into an array
+            // use headers.reduce to create an object
+            // object properties derived from headers:values
+            // the object passed as an element of the array
+            const arr = rows.map(function (row) {
+                const values = row.split(delimiter);
+                const el = headers.reduce(function (object, header, index) {
+                    object[header] = values[index];
+                    return object;
+                }, {});
+                return el;
+            });
+
+            // return the array
+            return arr;
+        }
+
+        myForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const input = csvFile.files[0];
+            const id = zoomId.value;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result;
+                const data = csvToArray(text);
+                console.log(data);
+                //document.write(JSON.stringify(data));
+                data.forEach(data => {
+                    sendEmail(data.Email, data.Nombre, data.Apellido, id)
+                });
+            };
+
+            reader.readAsText(input);
+        });
+
+
+        function sendEmail(email, name, lastname, zoomId) {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImxqRDBUYmV3U2gycFRWV3JOOHlkT3ciLCJleHAiOjE2NzIwNzg3ODMsImlhdCI6MTY3MTQ3Mzk4M30.l0uFWYB3W19WjimX2bBe15aoBUH6F0ehqe7lu3uPFaE");
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+            myHeaders.append('Access-Control-Allow-Credentials', 'true');
+
+            var raw = JSON.stringify({
+                "email": email,
+                "first_name": name,
+                "last_name": lastname
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow',
+                mode: 'cors',
+                credentials: 'include',
+            };
+
+            fetch(`https://api.zoom.us/v2/meetings/${zoomId}/registrants`, requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+        }
+    </script>
+</body>
+
+</html>
