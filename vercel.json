@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "ol-zoom",
+  "name": "zoomapp",
   "builds": [
     {
       "src": "./index.js",
