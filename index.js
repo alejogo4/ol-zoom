@@ -3,6 +3,12 @@ const app = express();
 
 const router = express.Router();
 
+//Handlebars
+app.engine("handlebars", engine());
+app.set("views", "./views");
+app.set("view engine", "handlebars");
+app.use(express.static(path.join(__dirname, "public")));
+
 router.get("/prueba", async (req, res) => {
   try {
     res.json({
