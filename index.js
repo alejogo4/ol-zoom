@@ -15,6 +15,10 @@ router.get("/prueba", async (req, res) => {
   }
 });
 
+router.get("/", function (req, res) {
+  res.render("home");
+});
+
 app.use(express.json({ extended: false }));
 
 app.use("/", router);
