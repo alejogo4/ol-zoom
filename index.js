@@ -6,7 +6,7 @@ const router = express.Router();
 
 //Handlebars
 app.engine("handlebars", engine());
-app.set("views", "./views");
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "handlebars");
 app.use(express.static(path.join(__dirname, "public")));
 
